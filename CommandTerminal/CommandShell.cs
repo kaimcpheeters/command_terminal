@@ -276,16 +276,24 @@ namespace CommandTerminal
         }
 
         string InferCommandName(string method_name) {
-            string command_name;
-            int index = method_name.IndexOf("COMMAND", StringComparison.CurrentCultureIgnoreCase);
-
-            if (index >= 0) {
-                // Method is prefixed, suffixed with, or contains "COMMAND".
-                command_name = method_name.Remove(index, 7);
-            } else {
-                command_name = method_name;
+            string command_name = method_name;
+            
+            // Check for prefix
+            if (method_name.StartsWith("COMMAND", StringComparison.OrdinalIgnoreCase)) {
+                command_name = method_name.Substring(7);
             }
-
+            // Check for suffix
+            else if (method_name.EndsWith("COMMAND", StringComparison.OrdinalIgnoreCase)) {
+                command_name = method_name.Substring(0, method_name.Length - 7);
+            }
+            // Check for middle
+            else {
+                int index = method_name.IndexOf("COMMAND", StringComparison.OrdinalIgnoreCase);
+                if (index >= 0) {
+                    command_name = method_name.Remove(index, 7);
+                }
+            }
+            
             return command_name;
         }
 
